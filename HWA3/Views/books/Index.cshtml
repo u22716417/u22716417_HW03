@@ -1,0 +1,74 @@
+﻿@model IEnumerable<HWA3.Models.book>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+          Page Count
+        </th>
+        <th>
+           Point
+        </th>
+        <th>
+           Author Name
+        </th>
+        <th>
+           Book Type
+        </th>
+        <th>
+            Book Status
+        </th>
+      
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.pagecount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.point)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.author.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.type.name)
+        </td>
+        <td>
+            @{
+                var selected = item.borrows.Where(s => s.bookId == item.bookId);
+                if (selected == null)
+                {
+                    <p style="color:green">Book Available</p>
+
+                }
+                else
+                {
+                    if (selected.Any(borrow => borrow.broughtDate == null))
+                    {
+                        <p style="color:red">Book Unavailable</p>
+                    }
+                    else
+                    {
+                        <p style="color:green">Book Available</p>
+                    }
+                }
+            }
+        </td>
+      
+    </tr>
+}
+
+</table>

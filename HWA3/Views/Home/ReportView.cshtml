@@ -1,0 +1,126 @@
+﻿@model HWA3.Models.ReportingVM
+@{
+    ViewBag.Title = "ReportView";
+}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<br />
+<br />
+<h2 style="text-align: center"> Top 10 Popular Books Report</h2>
+<br />
+<br />
+<div class="container">
+        <div class="card mb-4">
+            <div class="card-body">
+                <canvas id="pieChart" width="200" height="200"></canvas>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Archive</div>
+            <div class="card-body">
+                @using (Html.BeginForm("Export", "Home", FormMethod.Post))
+                {
+                    <label class="form-label" for="fileType">Select File Type:</label>
+                    <select class="form-control" name="filetype" id="fileType">
+                        <option value="png">PNG (Image)</option>
+                        <option value="pdf">PDF</option>
+                        <option value="csv">Excel</option>
+                    </select>
+                    <br />
+
+                    <label class="form-label" for="fileName">Select File Name:</label>
+                    <input class="form-control" name="fileName" type="text" />
+                    <br />
+                    <label class="form-label" for="desciption">Provide Description:</label>
+                       <textarea name="desciption" id="myRichTextBox"></textarea>
+                    <br />
+                    <button style="background-color:orangered" class="btn btn-success" type="submit">Export</button>
+                }
+                <br />
+                <h3>Exported Files</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                File Name
+                            </th>
+                            <th>
+                                File Type
+                            </th>
+                            <th>
+                                Location
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ArchiveDetails)
+                        {
+                            if (Model.ArchiveDetails != null)
+                            {
+                                <tr>
+                                    <td>@item.FileName</td>
+                                    <td>@item.FileType</td>
+                                    <td>@item.Location</td>
+                                    <td>@item.Description</td>
+                                    <td>
+                                        <a class="btn btn-success" href="@Url.Action("DownloadFile", "Home", new { id = item.FileName, type = item.FileType })">
+                                            Download File
+                                        </a>
+                                        |
+                                        <a style="background-color:red" class="btn btn-success" href="@Url.Action("DeleteFile", "Home", new { id = item.FileName})">
+                                           Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    No Data
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+
+
+<script>
+
+        var bookData = @Html.Raw(Json.Encode(Model.popularBooks.Select(b => new { Label = b.Title, Data = b.BookCount })));
+        var labels = bookData.map(item => item.Label);
+        var data = bookData.map(item => item.Data);
+
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'red',
+                        'blue',
+                        'green',
+                        'orange',
+                        'purple',
+                        'pink',
+                        'gray',
+                        'brown',
+                        'cyan',
+                        'magenta'
+                    ]
+                }]
+            }
+        });
+</script>

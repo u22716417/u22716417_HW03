@@ -1,0 +1,365 @@
+﻿@model HWA3.Models.MaintainVm
+
+@{
+    ViewBag.Title = "Maintain";
+}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .btn-success {
+            background-color: #4CAF50;
+            color: white;
+            border: 3px;
+            width: 100px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .btn-danger {
+            color: white;
+            border: 3px;
+            width: 90px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 2px 2px 5px #aaa;
+            background-color: #f7f7f7;
+        }
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dialog {
+            margin: 50px auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<div class="container">
+    <br />
+    <br />
+    <br />
+    <div style="display: flex; flex-wrap: wrap;">
+        <div class="card" style="flex: 1; margin-right: 20px;">
+            <br />
+            <br />
+            <h1>Book Type</h1>
+            <br />
+            <buttton id="CreateBookType" style="background-color:cadetblue" class="btn btn-success">Create</buttton>
+            <br />
+            <table id="Type" class="table">
+                <tr>
+                    <th hidden>
+                        Type Id
+                    </th>
+                    <th>
+                        Type Name
+                    </th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model.typeList)
+                {
+                    <tr>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.typeId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td>
+                            <button style="background-color:orange"class="btn btn-danger">Edit</button>|
+                            <buttton style="background-color:red" class="btn btn-success">Delete</buttton>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <ul style="overflow: auto" class="pagination pagination-lg">
+                @{
+                    if (!Model.typeList.IsFirstPage)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { typeIndex = Model.typeList.PageNumber - 1 })">Prev</a></li>
+                    }
+                    for (int j = 1; j <= Model.typeList.PageCount; j++)
+                    {
+                        <li class="page-item @(j == Model.typeList.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Maintain", "Home", new { typeIndex = j })">@j</a>
+                        </li>
+                    }
+                    if (!Model.typeList.IsLastPage)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { typeIndex = Model.typeList.PageNumber + 1 })">Next</a></li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <div class="card" style="flex: 1;">
+            <br />
+            <br />
+            <h1>Authors</h1>
+            <br />
+            <buttton id="CreateAuthor" style="background-color:cadetblue" class="btn btn-success">Create</buttton>
+            <br />
+            <table id="Author" class="table">
+                <tr>
+                    <th hidden>
+                        ID
+                    </th>
+                    <th>
+                        Author Name
+                    </th>
+                    <th>
+                        Author Surname
+                    </th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model.authorList)
+                {
+                    <tr>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.authorId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.surname)
+                        </td>
+                        <td>
+                            <button style="background-color:orange" class="btn btn-danger">Edit</button>|
+                            <buttton style="background-color:red" class="btn btn-success">Delete</buttton>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <ul style="overflow: auto" class="pagination pagination-lg">
+                @{
+                    if (!Model.authorList.IsFirstPage)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { authorsIndex = Model.typeList.PageNumber - 1 })">Prev</a></li>
+                    }
+                    for (int l = 1; l <= Model.authorList.PageCount; l++)
+                    {
+                        <li class="page-item @(l == Model.authorList.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Maintain", "Home", new { authorsIndex = l })">@l</a>
+                        </li>
+                    }
+                    if (!Model.authorList.IsLastPage)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { authorsIndex = Model.typeList.PageNumber + 1 })">Next</a></li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="card">
+        <br />
+        <br />
+        <h1>Books Borrowed</h1>
+        <br />
+        <buttton id="CreateBookBorrowed" style="background-color:cadetblue" class="btn btn-success">Create</buttton>
+        <br />
+        <table id="Borrowed" class="table">
+            <tr>
+                <th hidden>
+                    ID
+                </th>
+                <th>
+                    Taken Date
+                </th>
+                <th>
+                    Brought Date
+                </th>
+                <th>
+                    Book Name
+                </th>
+                <th>
+                    Student Borrowed
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.borrowsList)
+            {
+                <tr>
+                    <td hidden>
+                        @Html.DisplayFor(modelItem => item.borrowId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.takenDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.broughtDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.book.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.student.name)
+                    </td>
+                    <td>
+                        <button value="@item.borrowId" style="background-color:orange"  class="btn btn-danger">Edit</button>|
+                        <buttton value="@item.borrowId"style="background-color:red"class="btn btn-success">Delete</buttton>
+                    </td>
+                </tr>
+            }
+        </table>
+        <ul style="overflow: auto" class="pagination pagination-lg">
+            @{
+                if (!Model.borrowsList.IsFirstPage)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { borrowsIndex = Model.typeList.PageNumber - 1 })">Prev</a></li>
+                }
+                for (int a = 1; a <= Model.borrowsList.PageCount; a++)
+                {
+
+                    <li class="page-item @(a == Model.borrowsList.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Maintain", "Home", new { borrowsIndex = a })">@a</a>
+                    </li>
+                }
+                if (!Model.borrowsList.IsLastPage)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("Maintain", "Home", new { borrowsIndex = Model.typeList.PageNumber + 1 })">Next</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="modalContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    // Book Type
+    $(function () {
+        $("#Type .btn-danger").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/types/Edit/" + stringWithoutSpaces, function (data) {
+                
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#Type .btn-success").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/types/Delete/"+stringWithoutSpaces, function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#CreateBookType").click(function () {
+            $.get("/types/Create/", function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    // Author
+    $(function () {
+        $("#Author .btn-danger").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/authors/Edit/" + stringWithoutSpaces, function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#Author .btn-success").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/authors/Delete/" + stringWithoutSpaces, function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#CreateAuthor").click(function () {
+            $.get("/authors/Create/", function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    //Borrows 
+
+    $(function () {
+        $("#Borrowed .btn-danger").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/borrows/Edit/" + stringWithoutSpaces, function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#Borrowed .btn-success").click(function () {
+            var typeCont = $(this).closest("tr").find("td").eq(0).html();
+            var stringWithoutSpaces = typeCont.replace(/\s/g, "");
+            $.get("/borrows/Delete/" + stringWithoutSpaces, function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+    $(function () {
+        $("#CreateBookBorrowed").click(function () {
+            $.get("/borrows/Create/", function (data) {
+                $("#modalContent").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+</script>
